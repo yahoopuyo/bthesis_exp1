@@ -82,6 +82,8 @@ void GvsOutPut(char chan, int Value){
 }
 
 
+
+
 void OutPut(int val)
 {
 		GvsOutPut('1',val);
@@ -95,12 +97,25 @@ void OutPut(int val)
 
 void OutPutP(int val)	//no print
 {
-		GvsOutPut('1',val);
-		
+	GvsOutPut('1',val);	
+}
+
+void OutPutTrap(int amp,int pw,int dir)	//台形波チック
+{
+	int val = 0;
+	while(val < amp){
+		val = val + 100;
+		if(val > amp) val = amp;
+		OutPutP(val*dir);
+		}
+	OutPut(val*dir);
+	myTimer.Start();
+	myTimer.Wait(pw);
+	OutPut(0);
 }
 
 
-int PEST()
+int PEST()	//閾値求める１
 {
 	printf("PEST mode\n");
 	int Count = 0;
@@ -143,7 +158,7 @@ int PEST()
 			OutPut(0);
 			break;
 		}
-		if(pp == 't'){
+		if(pp == 't'){	//
 			int val = 0;
 			while(val < point){
 				val = val + 100;
@@ -154,7 +169,7 @@ int PEST()
 			myTimer.Wait(pw);
 			OutPut(0);
 		}
-		if(pp == 'Y'){	//for debug
+		if(pp == 'Y'){	//for debug, opposite
 			int val = 0;
 			while(val < point){
 				val = val + 100;
@@ -173,7 +188,7 @@ int PEST()
 
 
 
-void PWM()
+void PWM()	//pwmでためす
 {
 	printf("pwm mode\n");
 	int freq = 10;
@@ -190,6 +205,7 @@ void PWM()
 			pp = _getch();
 
 			if(pp=='q'){
+
 				OutPut(0);
 				printf("exit pwm mode\n");
 				break;
@@ -225,17 +241,17 @@ void PWM()
 				printf("pw = %d\n",pw);
 			}
 			if(pp=='t'){
-				int dur = 1.0 / freq * 1000000;
+				int dur = 1.0 / freq* 1000000;
 				char pp2=0;
 				while(1){
 					if(_kbhit()) pp2=_getch();
 					if(pp2 == '\033') break;
-					OutPut(2000);
+					OutPut(forward*2000);
 					myTimer.Start();
-					myTimer.Wait(forward*pw);
+					myTimer.Wait(pw);
 					OutPut(0);
 					myTimer.Start();
-					myTimer.Wait(forward*(dur-pw));
+					myTimer.Wait(dur-pw);
 				}
 			}
 		}
@@ -243,7 +259,7 @@ void PWM()
 }
 
 
-void AC()
+void AC()	//色々実験したりするよう
 {	
 	printf("Free test Mode\n");
 	
@@ -357,6 +373,41 @@ void AC()
 }
 
 
+void EXP(int i_r_in)	//閾値に従って、電流値を変える実験
+{
+	printf("Experiment mode\n");
+	int i_r=i_r_in;
+	int val=i_r_in;
+	int two_s = 2000000;
+	bool ready=false;
+	//①閾値再確認
+	while(!ready)
+	{
+		if(_kbhit()){
+			switch(_getch())
+			{
+			case 't':
+				OutPutTrap(i_r,two_s,1);
+				break;
+			case 'n':
+				i_r += 10;
+				printf("i_r = %d\n",i_r);
+				break;
+			case 'y':
+				ready=true;
+				printf("%d[mA] will be used as threshold from now on\n",i_r);
+				break;
+			case 'q':
+				printf("exit experiment mode\n");
+				return;
+			default:
+				break;
+			}
+		}
+	}
+
+
+}
 
 
 void main(void)
@@ -375,6 +426,7 @@ void main(void)
 			if(mode == '0') AC();
 			if(mode == '1') {i_r = PEST(); printf("i_r = %d\n",i_r);}
 			if(mode == '2') PWM();
+			if(mode == '3') EXP(i_r);
 
 	
 		}
