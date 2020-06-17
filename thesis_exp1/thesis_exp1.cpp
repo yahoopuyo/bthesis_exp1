@@ -24,6 +24,8 @@
 
 #include "serial.h"
 
+using namespace std;
+
 #define PI 3.141592
 
 
@@ -100,8 +102,9 @@ void OutPutP(int val)	//no print
 
 int PEST()
 {
+	printf("PEST mode\n");
 	int Count = 0;
-	double i_r=0; //bottom limit
+	double i_r_l=0; //bottom limit
 	int point = 500;	//starts from 500
 	int pre_point=0;
 	int pw = 1000000; //1 sec
@@ -135,7 +138,7 @@ int PEST()
 			point -= tol;
 			printf("%d\n",point);
 		}
-		if(pp == '\033'){	//escape reset
+		if(pp == 'q'){	//escape reset
 			printf("keyboard interruption at point = %d",point);
 			OutPut(0);
 			break;
@@ -151,7 +154,7 @@ int PEST()
 			myTimer.Wait(pw);
 			OutPut(0);
 		}
-		if(pp == 'y'){	//for debug
+		if(pp == 'Y'){	//for debug
 			int val = 0;
 			while(val < point){
 				val = val + 100;
@@ -164,14 +167,85 @@ int PEST()
 		}
 		pp = 0;
 	}
-	i_r = (point + pre_point) / 2;
-	return int(i_r);
+	i_r_l = (point + pre_point) / 2;
+	return int(i_r_l);
 }
 
 
 
+void PWM()
+{
+	printf("pwm mode\n");
+	int freq = 10;
+	int pw = 50000;//0.05s
+	int freq_tol=1;
+	int pw_tol = 10000; //0.01sÇ∏Ç¬
+	int forward=1;
+	int amp = 2000;
+	char pp = 0;
+
+
+	while(1){
+		if(_kbhit()){
+			pp = _getch();
+
+			if(pp=='q'){
+				OutPut(0);
+				printf("exit pwm mode\n");
+				break;
+			}
+			if(pp=='i'){
+				freq+=freq_tol;
+				printf("freq = %d\n",freq);
+			}
+			if(pp=='k'){
+				freq-=freq_tol;
+				printf("freq = %d\n",freq);
+			}
+			if(pp=='I'){
+				pw+=pw_tol;
+				double pw_s = pw * 1.0 / 1000000;
+				printf("pw = %lf[s]\n",pw_s);
+			}
+			if(pp=='K'){
+				pw-=pw_tol;
+				double pw_s = pw * 1.0 / 1000000;
+				printf("pw = %lf[s]\n",pw_s);
+			}
+			if(pp=='d'){
+				forward *= -1;
+				printf("direction:%d\n",forward);
+			}
+			if(pp=='r'){
+				double rate;
+				cout << "rate" << endl;cin >> rate;
+				pw = 1.0 / freq * rate * 1000000;
+				double pw_s = pw * 1.0 / 1000000;
+				printf("pw = %lf[s]\n",pw_s);
+				printf("pw = %d\n",pw);
+			}
+			if(pp=='t'){
+				int dur = 1.0 / freq * 1000000;
+				char pp2=0;
+				while(1){
+					if(_kbhit()) pp2=_getch();
+					if(pp2 == '\033') break;
+					OutPut(2000);
+					myTimer.Start();
+					myTimer.Wait(forward*pw);
+					OutPut(0);
+					myTimer.Start();
+					myTimer.Wait(forward*(dur-pw));
+				}
+			}
+		}
+	}
+}
+
+
 void AC()
 {	
+	printf("Free test Mode\n");
 	
 	char pp = 0;
 	int val = 0;
@@ -188,6 +262,7 @@ void AC()
 			if( _kbhit() ){
 			pp = _getch();
 			
+			if(pp == 'q') {OutPut(0); printf("exit free test mode\n"); break;}//escape from AC()
 
 			if(pp == 'p'){	//show current
 				printf("%d\n",val);
@@ -256,18 +331,33 @@ void AC()
 			}
 
 			else if (pp == 'B'){
-				val=amp;
-				printf("Back\n");
-				OutPut(val*(-1));
+				val = 0;
+				while(val < amp){
+					val = val + 100;
+					if(val > amp) val = amp;
+					OutPutP(-val);
+					}
+				myTimer.Start();
+				myTimer.Wait(pw);
+				OutPut(0);
 			}
 			else if (pp == 'F'){
-				val=amp;
-				printf("Forward\n");
-				OutPut(val);
+				val = 0;
+				while(val < amp){
+					val = val + 100;
+					if(val > amp) val = amp;
+					OutPutP(val);
+					}
+				myTimer.Start();
+				myTimer.Wait(pw);
+				OutPut(0);
 			}
 		}	
 	}
 }
+
+
+
 
 void main(void)
 {
@@ -276,9 +366,17 @@ void main(void)
 	hCom = NULL;
 	hCom = new COMPORT( "\\\\.\\COM3", 9600);//ìÒåÖÇÃÇ∆Ç´ÇÕ\\\\.\\COMXXÇ…Ç∑ÇÈÇÒÇ‚ÅI
 	//hCom = new COMPORT( "COM3", 9600);//ìÒåÖÇÃÇ∆Ç´ÇÕ\\\\.\\COMXXÇ…Ç∑ÇÈÇÒÇ‚ÅI
-	int i_r;
-	i_r = PEST();
-	printf("i_r = %d\n",i_r);
+	char mode=0;
+	int i_r=0;
+	while(1){
+		if( _kbhit() ){
+			mode = _getch();
+
+			if(mode == '0') AC();
+			if(mode == '1') {i_r = PEST(); printf("i_r = %d\n",i_r);}
+			if(mode == '2') PWM();
+
 	
-	AC();
+		}
+	}
 }
