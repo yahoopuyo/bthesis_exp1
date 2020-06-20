@@ -63,7 +63,7 @@ int PEST()	//閾値求める１
 	double i_r_l=0; //bottom limit
 	int point = 500;	//starts from 500
 	int pre_point=0;
-	int pw = 1000000; //1 sec
+	int pw = 2000000; //1 sec
 	int tol = 300;	//tolerance starts from 600
 	double tol_dec_rate = 0.8;
 	int threshold = 58;
@@ -427,6 +427,7 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 	int two_s = 2000000;
 	bool ready=false;
 	//①閾値再確認
+	cout << "make sure sensation exists at threshold" << endl;
 	while(!ready)
 	{
 		if(_kbhit()){
@@ -451,20 +452,7 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 			}
 		}
 	}
-	/*
-	//define the order of position
-	int pos[6]={0,1,2,3,4,5};
-	string pos_name[6] = {
-		"ulnar rist",
-		"ulnar elbow",
-		"ulnar armpit",
-		"median rist",
-		"median elbow",
-		"median armpit"
-	};
-	shuffle(pos,6);
-	//for (int i = 0; i < 6; i++) cout << "pos_name[" << i << "]=" << pos_name[pos[i]] << endl;
-	*/
+	
 
 	//define the order and value of current
 
@@ -483,11 +471,11 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 
 	shuffle(current,DATA_POINTS);
 	for (int i = 0; i < DATA_POINTS; i++) current_val[i] = (int)i_r * pow(a,i);
-	for (int i = 0; i < DATA_POINTS; i++) cout << current_name[current[i]] << " : " << current_val[current[i]] <<endl;
-
+	//for (int i = 0; i < DATA_POINTS; i++) cout << current_name[current[i]] << " : " << current_val[current[i]] <<endl;
 
 	for (int i=0; i < DATA_POINTS; i++)
 	{
+		cout << "Stimulation number " << i << " : "<< current_name[current[i]] << "(" << current_val[current[i]]  <<"[mA])"<<endl;
 		bool done = false;
 		while(!done)
 		{
@@ -495,15 +483,11 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 			switch(_getch())
 			{
 			case 't':
-				OutPutTrap(i_r,two_s,1);
+				OutPutTrap(current_val[current[i]],two_s,1);
 				break;
 			case 'n':
-				i_r += 10;
-				printf("i_r = %d\n",i_r);
-				break;
-			case 'y':
-				ready=true;
-				printf("%d[mA] will be used as threshold from now on\n",i_r);
+				cout << "moving on to next current value" << endl;
+				done = true;
 				break;
 			case 'q':
 				printf("exit experiment mode\n");
@@ -516,6 +500,37 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 	}
 }
 
+void EXPMAIN()
+{
+	cout << "Start the experiment\n" << endl;
+
+	//define the order of position
+	int pos[6]={0,1,2,3,4,5};
+	string pos_name[6] = {
+		"ulnar rist",
+		"ulnar elbow",
+		"ulnar armpit",
+		"median rist",
+		"median elbow",
+		"median armpit"
+	};
+	shuffle(pos,6);
+	cout << "The order of position" << endl;
+	for (int i = 0; i < 6; i++) cout <<  pos_name[pos[i]] << endl;
+	printf("\n");
+	
+	for (int i=0; i< 6; i++)
+	{
+		cout << "Stimulation at " << pos_name[pos[i]] << endl;
+		AC();
+		cout << "Threshold" << endl;
+		int i_r = PEST();
+		cout << "threshold val = " << i_r << endl;
+		EXP2(i_r);
+		cout << "Experiment at this position is over\n" << endl; 
+	}
+	cout << "Experiment done" << endl;
+}
 
 void main(void)
 {
@@ -535,6 +550,7 @@ void main(void)
 			if(mode == '2') PWM();
 			if(mode == '3') EXP2(10);
 			if(mode == '4') {i_r = threshold2(); printf("i_r = %d\n",i_r);}
+			if(mode == '9') EXPMAIN();
 			
 
 	
