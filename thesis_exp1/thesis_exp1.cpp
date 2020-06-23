@@ -20,6 +20,7 @@
 #include <vector>
 #include <random>
 #include <numeric>
+#include <fstream>
 
 #include "CPUTimer.h"
 #include "CPUTimer.cpp"
@@ -43,6 +44,7 @@ LARGE_INTEGER g_liStart;
 LARGE_INTEGER g_liTmp;
 LARGE_INTEGER g_liEnd;
 
+ofstream ofs;
 
 int get_rand( int min_val, int max_val );
 
@@ -57,7 +59,7 @@ void OutPutTrap(int amp,int pw,int dir);	//台形波チック
 void shuffle( int* array, int size );	//配列のシャッフル
 
 
-int PEST()	//閾値求める１
+int PEST(bool write)	//閾値求める１
 {
 	printf("PEST mode\n");
 	double i_r_l=0; //bottom limit
@@ -82,6 +84,7 @@ int PEST()	//閾値求める１
 			}
 			pre_point = point;
 			point += tol;
+			if(write) ofs << pre_point << "," << 'n' << endl;
 			printf("%d\n",point);
 		}
 		if(pp == 'y'){
@@ -91,6 +94,7 @@ int PEST()	//閾値求める１
 			}
 			pre_point = point;
 			point -= tol;
+			if(write) ofs << pre_point << "," << 'y' << endl;
 			printf("%d\n",point);
 		}
 		if(pp == 'q'){	//escape reset
@@ -122,7 +126,9 @@ int PEST()	//閾値求める１
 		}
 		pp = 0;
 	}
-	i_r_l = (point + pre_point) / 2;
+	//i_r_l = (point + pre_point) / 2;
+	i_r_l = point;
+	if(write) ofs << i_r_l << "," << "threshold" << '\n' << endl;
 	return int(i_r_l);
 }
 
@@ -471,7 +477,8 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 
 	shuffle(current,DATA_POINTS);
 	for (int i = 0; i < DATA_POINTS; i++) current_val[i] = (int)i_r * pow(a,i);
-	//for (int i = 0; i < DATA_POINTS; i++) cout << current_name[current[i]] << " : " << current_val[current[i]] <<endl;
+	for (int i = 0; i < DATA_POINTS; i++) ofs << current_name[current[i]] << " : " << current_val[current[i]] <<endl;
+	ofs << '\n' << endl;
 
 	for (int i=0; i < DATA_POINTS; i++)
 	{
@@ -524,7 +531,8 @@ void EXPMAIN()
 		cout << "Stimulation at " << pos_name[pos[i]] << endl;
 		AC();
 		cout << "Threshold" << endl;
-		int i_r = PEST();
+		ofs << pos_name[pos[i]] << endl;
+		int i_r = PEST(true);
 		cout << "threshold val = " << i_r << endl;
 		EXP2(i_r);
 		cout << "Experiment at this position is over\n" << endl; 
@@ -546,12 +554,36 @@ void main(void)
 			mode = _getch();
 
 			if(mode == '0') AC();
-			if(mode == '1') {i_r = PEST(); printf("i_r = %d\n",i_r);}
+			if(mode == '1') {i_r = PEST(false); printf("i_r = %d\n",i_r);}
 			if(mode == '2') PWM();
 			if(mode == '3') EXP2(10);
 			if(mode == '4') {i_r = threshold2(); printf("i_r = %d\n",i_r);}
-			if(mode == '9') EXPMAIN();
-			
+			if(mode == '9') {
+				/*
+				int num;
+				string file;
+				cout << "Subject number:";
+				cin >> num;
+				file << "result" << num.ToString() << ".csv";
+				*/
+				ofs.open("test.csv");
+				EXPMAIN();
+				ofs.close();
+			}
+			if(mode == '8') 
+			{
+				/*
+				int num;
+				string file;
+				cout << "Subject number:";
+				cin >> num;
+				file << "result" << num << ".csv";
+				*/
+				ofs.open("test.csv");
+				ofs << 20 << "," << 10 << endl;
+				ofs.close();
+    
+			}
 
 	
 		}

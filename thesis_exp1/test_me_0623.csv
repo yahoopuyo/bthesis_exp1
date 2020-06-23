@@ -1,0 +1,88 @@
+ulnar rist
+500,n
+800,n
+1100,n
+1400,n
+1700,n
+2000,y
+1760,y
+1520,y
+1280,n
+1472,n
+1664,y
+1511,y
+1358,n
+1480,n
+1602,y
+1505,n
+1582,y
+1521,y
+1460,n
+1508,threshold
+
+threshold : 1508
+second from threshold : 1960
+third from threshold : 2548
+largest : 3313
+
+
+median rist
+500,n
+800,n
+1100,n
+1400,n
+1700,y
+1460,y
+1220,y
+980,n
+1172,y
+1019,n
+1141,n
+1263,y
+1166,n
+1243,y
+1182,y
+1121,y
+1060,y
+999,n
+1047,threshold
+
+threshold : 1057
+third from threshold : 1786
+largest : 2322
+second from threshold : 1374
+
+
+ulnar armpit
+500,n
+800,n
+1100,n
+1400,n
+1700,n
+2000,n
+2300,n
+2600,y
+2360,y
+2120,n
+2312,n
+2504,n
+2696,y
+2543,y
+2390,y
+2237,n
+2359,n
+2481,y
+2384,y
+2287,n
+2364,n
+2441,y
+2380,y
+2319,n
+2367,threshold
+
+second from threshold : 3077
+threshold : 2367
+largest : 5200
+third from threshold : 4000
+
+
