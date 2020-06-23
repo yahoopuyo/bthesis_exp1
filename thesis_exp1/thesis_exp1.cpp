@@ -659,12 +659,16 @@ void GvsOutPut(char chan, int Value){
 
 void OutPut(int val)
 {
+		if (val > 4000) val = 4000;
+		if (val < -4000) val = -4000;
 		GvsOutPut('1',val);
 		printf("%d\n",val);
 }
 
 void OutPutP(int val)
 {
+		if (val > 4000) val = 4000;
+		if (val < -4000) val = -4000;
 		GvsOutPut('1',val);
 }
 
