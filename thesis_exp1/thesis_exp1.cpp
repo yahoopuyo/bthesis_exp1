@@ -63,12 +63,12 @@ int PEST(bool write)	//閾値求める１
 {
 	printf("PEST mode\n");
 	double i_r_l=0; //bottom limit
-	int point = 500;	//starts from 500
+	int point = 200;	//starts from 500
 	int pre_point=0;
-	int pw = 2000000; //1 sec
+	int pw = 2000000; //2 sec
 	int tol = 300;	//tolerance starts from 600
-	double tol_dec_rate = 0.8;
-	int threshold = 58;
+	double tol_dec_rate = 0.7;
+	int threshold = 60;
 	char pp=0;
 
 	while (tol > threshold)
@@ -127,7 +127,7 @@ int PEST(bool write)	//閾値求める１
 		pp = 0;
 	}
 	//i_r_l = (point + pre_point) / 2;
-	i_r_l = point;
+	i_r_l = pre_point;
 	if(write) ofs << i_r_l << "," << "threshold" << '\n' << endl;
 	return int(i_r_l);
 }
@@ -429,7 +429,6 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 {
 	printf("Change the current value and record the location of sensation\n\n");
 	int i_r=i_r_in;
-	int val=i_r_in;
 	int two_s = 2000000;
 	bool ready=false;
 	//①閾値再確認
@@ -465,21 +464,21 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 	//i th value is defined by eq: val = a^i * i_r where a is a constant.
 
 	const int DATA_POINTS = 4;	//number of datapoints for current
-	double a=1.3;
+	double a=1.4;
 	int current[DATA_POINTS]={0,1,2,3};
 	int current_val[DATA_POINTS] = {0,0,0,0};
 	string current_name[DATA_POINTS] = {
 		"threshold",
 		"second from threshold",
 		"third from threshold",
-		"largest"
+		"forth from treshold"
 	};
 
-	shuffle(current,DATA_POINTS);
+	//shuffle(current,DATA_POINTS);
 	for (int i = 0; i < DATA_POINTS; i++) current_val[i] = (int)i_r * pow(a,i);
-	for (int i = 0; i < DATA_POINTS; i++) ofs << current_name[current[i]] << " : " << current_val[current[i]] <<endl;
-	ofs << '\n' << endl;
-
+	for (int i = 0; i < DATA_POINTS; i++) ofs << current_name[current[i]] << "," << current_val[current[i]] <<endl;
+	
+	//first 4 current values
 	for (int i=0; i < DATA_POINTS; i++)
 	{
 		cout << "Stimulation number " << i << " : "<< current_name[current[i]] << "(" << current_val[current[i]]  <<"[mA])"<<endl;
@@ -505,6 +504,82 @@ void EXP2(int i_r_in)	//expiriment flow for specific position
 		}
 		}
 	}
+
+	//last current value, maximum current chosen by subject
+	cout << "Stimulation number " << DATA_POINTS << ":" << "max" << endl;
+	cout << "increase the current value to the limit" << endl;
+	bool flag = false;
+	int start = current_val[DATA_POINTS-1];
+	int val = start;
+	while(!flag)
+	{
+		if(_kbhit()){
+			switch(_getch())
+			{
+			case 'f':
+				val=0;
+				printf("Forward\n");
+				while(val < start){
+					val = val + 100;
+					OutPutP(val);
+				}
+				val = start;
+				OutPut(val);
+				break;
+			case 'i':
+				val+=100;
+				OutPut(val);
+				break;
+			case 'k':
+				val-=100;
+				OutPut(val);
+				break;
+			case 'n':
+				ofs << "max" << ',' << val << endl;
+				cout << "max" << ':' << val << endl;
+				flag = true;
+				break;
+			case 'q':
+				printf("exit experiment mode\n");
+				return;
+			case '\033':
+				OutPut(0);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	bool done = false;
+	cout << "record last stimulation" << endl;
+	while(!done)
+	{
+		
+		if(_kbhit())
+		{
+			switch(_getch())
+			{
+			case 't':
+				OutPutTrap(val,two_s,1);
+				break;
+			case 'n':
+				done = true;
+				break;
+			case 'q':
+				printf("exit experiment mode\n");
+				return;
+			case '\033':
+				OutPut(0);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	ofs << '\n' << endl;
+
 }
 
 void EXPMAIN()

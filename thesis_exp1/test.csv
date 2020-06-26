@@ -1,0 +1,48 @@
+ulnar rist
+200,n
+500,n
+800,n
+1100,y
+890,n
+1037,y
+935,n
+1006,y
+1006,threshold
+
+threshold,1016
+second from threshold,1422
+third from threshold,1991
+forth from treshold,2787
+max,3687
+
+
+median armpit
+200,n
+500,n
+800,n
+1100,n
+1400,n
+1700,n
+2000,n
+2300,n
+2600,n
+2900,n
+3200,y
+2990,y
+2780,n
+2927,y
+2825,y
+2723,y
+2621,y
+2519,y
+2417,y
+2315,y
+2213,n
+2284,y
+2284,threshold
+
+threshold,2294
+second from threshold,3211
+third from threshold,4496
+forth from treshold,6294
+max,0
