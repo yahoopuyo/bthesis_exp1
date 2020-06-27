@@ -634,30 +634,27 @@ void main(void)
 			if(mode == '3') EXP2(10);
 			if(mode == '4') {i_r = threshold2(); printf("i_r = %d\n",i_r);}
 			if(mode == '9') {
-				/*
-				int num;
+				string num;
 				string file;
 				cout << "Subject number:";
 				cin >> num;
-				file << "result" << num.ToString() << ".csv";
-				*/
-				ofs.open("test.csv");
+				file = "result" + num + ".csv";
+				
+				ofs.open(file);
 				EXPMAIN();
 				ofs.close();
 			}
 			if(mode == '8') 
 			{
-				/*
-				int num;
+				string num;
 				string file;
 				cout << "Subject number:";
 				cin >> num;
-				file << "result" << num << ".csv";
-				*/
-				ofs.open("test.csv");
+				file = "result" + num + ".csv";
+				
+				ofs.open(file);
 				ofs << 20 << "," << 10 << endl;
 				ofs.close();
-    
 			}
 
 	
