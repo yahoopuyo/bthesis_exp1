@@ -1,0 +1,50 @@
+median rist
+0,threshold
+
+median armpit
+0,threshold
+
+ulnar armpit
+0,threshold
+
+median elbow
+0,threshold
+
+ulnar elbow
+200,n
+500,n
+800,n
+1100,y
+890,n
+1037,y
+935,n
+1006,n
+1077,y
+1077,threshold
+
+threshold,1077
+second from threshold,1507
+third from threshold,2110
+forth from treshold,2955
+max,3655
+
+
+ulnar rist
+200,n
+500,n
+800,n
+1100,n
+1400,y
+1190,y
+980,n
+1127,n
+1274,y
+1172,n
+1243,y
+1243,threshold
+
+threshold,1243
+second from threshold,1740
+third from threshold,2436
+forth from treshold,3410
+max,4110

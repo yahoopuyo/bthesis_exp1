@@ -1,0 +1,125 @@
+median armpit
+200,n
+500,n
+800,n
+1100,y
+890,y
+680,n
+827,n
+974,y
+872,n
+943,y
+943,threshold
+
+threshold,943
+second from threshold,1320
+third from threshold,1848
+forth from treshold,2587
+max,4187
+
+
+median elbow
+200,n
+500,n
+800,n
+1100,n
+1400,y
+1190,n
+1337,n
+1484,y
+1382,n
+1453,y
+1453,threshold
+
+threshold,1473
+second from threshold,2062
+third from threshold,2887
+forth from treshold,4041
+max,4041
+
+
+ulnar armpit
+200,n
+500,n
+800,n
+1100,n
+1400,n
+1700,n
+2000,n
+2300,y
+2090,y
+1880,y
+1670,n
+1817,n
+1964,y
+1862,y
+1760,n
+1831,n
+1902,n
+1973,y
+1973,threshold
+
+threshold,1973
+second from threshold,2762
+third from threshold,3867
+forth from treshold,5413
+max,5413
+
+
+median rist
+200,n
+500,n
+800,y
+590,n
+737,n
+884,y
+782,y
+680,n
+751,y
+751,threshold
+
+threshold,751
+second from threshold,1051
+third from threshold,1471
+forth from treshold,2060
+max,3160
+
+
+ulnar elbow
+200,n
+500,n
+800,n
+1100,y
+890,n
+1037,y
+935,n
+1006,n
+1077,y
+1077,threshold
+
+threshold,1077
+second from threshold,1507
+third from threshold,2110
+forth from treshold,2955
+max,3655
+
+
+ulnar rist
+200,n
+500,n
+800,n
+1100,n
+1400,y
+1190,y
+980,n
+1127,n
+1274,y
+1172,n
+1243,y
+1243,threshold
+
+threshold,1243
+second from threshold,1740
+third from threshold,2436
+forth from treshold,3410
+max,4110
